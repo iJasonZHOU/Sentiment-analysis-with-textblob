@@ -1,0 +1,29 @@
+from textblob import TextBlob
+import tweepy
+import csv
+
+
+consumer_key="iD0QhqqPbZk5ac9aFC6wphkPP"
+consumer_secret="ZmkxJsTATaMxFf2MbxOXtLOIggTKc2HsTp5Oe3xrJ8uTofA9ifad"
+
+access_token="1058909289119604736-fbsi7PU6ddNQAE5WcfjpjHRXbM7z7e"
+access_token_secret="WVHdy8sl6CbHidLS42HRVrZGjxcUFnZWS6KI7uibopHD2bc"
+
+auth=tweepy.OAuthHandler(consumer_key,consumer_secret)
+auth.set_access_token(access_token,access_token_secret)
+
+api=tweepy.API(auth)
+
+public_tweets=api.search("Trump")
+data_path="sentiment_on_trump.csv"
+with open(data_path,'w') as out_path:
+    writer=csv.writer(out_path)
+    writer.writerow(['tweet on trump','label of sentiment'])
+    for tweet in public_tweets:
+        text=tweet.text
+        blob=TextBlob(text)
+        senti=blob.sentiment.polarity
+        if senti>0:
+            writer.writerow([text,'pos'])
+        else:
+            writer.writerow([text,'neg'])
